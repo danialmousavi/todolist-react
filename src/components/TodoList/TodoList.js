@@ -12,13 +12,6 @@ export default class TodoList extends Component {
             todoTitle: '',
             status: 'all'
         }
-
-        // this.addTodo = this.addTodo.bind(this)
-        // this.removeTodo = this.removeTodo.bind(this)
-        // this.editTodo = this.editTodo.bind(this)
-        // this.todoTitleHandler = this.todoTitleHandler.bind(this)
-        // this.statusHandler = this.statusHandler.bind(this)
-
     }
     todoTitleHandler(e){
         this.setState({todoTitle:e.target.value});
@@ -89,7 +82,7 @@ export default class TodoList extends Component {
                         {this.state.status==='completed'&&this.state.todos.filter(todo=>todo.isCompleted===true).map(todo=>(
                            <Todo key={todo.id} {...todo} onRemove={(id)=>this.removeTodo(id)} onComplete={(id)=>this.editTodo(id)}/>
                         ))}                        
-                        
+
                         {this.state.status==='uncompleted'&&this.state.todos.filter(todo=>todo.isCompleted===false).map(todo=>(
                            <Todo key={todo.id} {...todo} onRemove={(id)=>this.removeTodo(id)} onComplete={(id)=>this.editTodo(id)}/>
                         ))}                      
