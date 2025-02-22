@@ -1,71 +1,66 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import Header from './Header'
 import Todo from './Todo'
 import { BsPlusSquare } from "react-icons/bs";
 
-export default class TodoList extends Component {
+export default function TodoLis() {
 
-    constructor(props) {
-        super(props)
-        this.state = {
-            todos: [],
-            todoTitle: '',
-            status: 'all'
-        }
-    }
-    todoTitleHandler(e){
-        this.setState({todoTitle:e.target.value});
 
+    const [todos,setTodos]=useState([]);
+    const [todoTitle,setTodoTitle]=useState('');
+    const [status,setStatus]=useState('all')
+   const todoTitleHandler=(e)=>{
+        setTodoTitle(e.target.value)
         
     }
-    addTodo(e){
+   const addTodo=(e)=>{
         e.preventDefault();
-        if(this.state.todoTitle){
+        if(todoTitle){
             let newTodo={
-                id:this.state.todos.length+1,
-                title:this.state.todoTitle,
+                id:todos.length+1,
+                title:todoTitle,
                 isCompleted:false
             }
-            this.setState((prevState)=>({
-                todos:[...prevState.todos,newTodo],
-                todoTitle: ''
-            }))
+            setTodos(prevState=>{
+                return [...prevState, newTodo]
+            })
+            setTodoTitle('')
         }
     }
-    editTodo(id){
-    this.setState(prevState => ({
-        todos: prevState.todos.map(todo =>
+    const editTodo=(id)=>{
+    setTodos(prevState => 
+        prevState.map(todo =>
             todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
         )
-    }));
+    );
+
     }
-    removeTodo(id){
-        let removedTodo=this.state.todos.filter(todo=>todo.id!==id);
-        this.setState({todos:removedTodo})
+   const removeTodo=(id)=>{
+        let removedTodo=todos.filter(todo=>todo.id!==id);
+        setTodos(removedTodo)
     }
-    statusHandler(e){
+   const statusHandler=(e)=>{
         if(e.target.value==='completed'){
-            this.setState({status:'completed'})
+            setStatus('completed')
         }
         else if(e.target.value==='uncompleted'){
-            this.setState({status:'uncompleted'})
-            
+            setStatus('uncompleted')
         }
         else{
-            this.setState({status:'all'})
+            setStatus('all')
         }
     }
-    render() {
+
         return (
             <>
                 <Header />
-                <form onSubmit={(e)=>this.addTodo(e)}>
-                    <input type="text" className="todo-input" value={this.state.todoTitle} maxLength="40" onChange={(e)=>this.todoTitleHandler(e)}/>
+                <form onSubmit={(e)=>addTodo(e)}>
+                    <input type="text" className="todo-input" value={todoTitle} maxLength="40" onChange={(e)=>todoTitleHandler(e)}/>
                     <button className="todo-button" type="submit">
                         <BsPlusSquare/>
                     </button>
                     <div className="select">
-                        <select name="todos" className="filter-todo" onChange={(e)=>this.statusHandler(e)}>
+                        <select name="todos" className="filter-todo" onChange={(e)=>statusHandler(e)}>
                             <option value="all">All</option>
                             <option value="completed">Completed</option>
                             <option value="uncompleted">Uncompleted</option>
@@ -76,19 +71,19 @@ export default class TodoList extends Component {
                 <div className="todo-container">
                     <ul className="todo-list">
 
-                        {this.state.status==='all'&&this.state.todos.map(todo=>(
-                           <Todo key={todo.id} {...todo} onRemove={(id)=>this.removeTodo(id)} onComplete={(id)=>this.editTodo(id)}/>
+                        {status==='all'&&todos.map(todo=>(
+                           <Todo key={todo.id} {...todo} onRemove={(id)=>removeTodo(id)} onComplete={(id)=>editTodo(id)}/>
                         ))}
-                        {this.state.status==='completed'&&this.state.todos.filter(todo=>todo.isCompleted===true).map(todo=>(
-                           <Todo key={todo.id} {...todo} onRemove={(id)=>this.removeTodo(id)} onComplete={(id)=>this.editTodo(id)}/>
+                        {status==='completed'&&todos.filter(todo=>todo.isCompleted===true).map(todo=>(
+                           <Todo key={todo.id} {...todo} onRemove={(id)=>removeTodo(id)} onComplete={(id)=>editTodo(id)}/>
                         ))}                        
 
-                        {this.state.status==='uncompleted'&&this.state.todos.filter(todo=>todo.isCompleted===false).map(todo=>(
-                           <Todo key={todo.id} {...todo} onRemove={(id)=>this.removeTodo(id)} onComplete={(id)=>this.editTodo(id)}/>
+                        {status==='uncompleted'&&todos.filter(todo=>todo.isCompleted===false).map(todo=>(
+                           <Todo key={todo.id} {...todo} onRemove={(id)=>removeTodo(id)} onComplete={(id)=>editTodo(id)}/>
                         ))}                      
                     </ul>
                 </div>
             </>
         )
     }
-}
+
